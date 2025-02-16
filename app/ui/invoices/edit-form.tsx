@@ -10,6 +10,9 @@ import {
 import Link from 'next/link';
 import { Button } from '@/app/ui/button';
 
+import { updateInvoice } from '@/app/lib/actions';
+
+
 export default function EditInvoiceForm({
   invoice,
   customers,
@@ -17,8 +20,21 @@ export default function EditInvoiceForm({
   invoice: InvoiceForm;
   customers: CustomerField[];
 }) {
+
+
+  // Passing an id as argument won't work
+  // <form action={updateInvoice(id)}> 
+  
+  
+const updateInvoiceWithId = updateInvoice.bind(null, invoice.id);
+  // Instead, you can pass id to the Server Action using JS bind. 
+  // This will ensure that any values passed to the Server Action are encoded.
+  const initialState: State = { message: null, errors: {} };
+  const updateInvoiceWithId = updateInvoice.bind(null, invoice.id);
+  const [state, formAction] = useActionState(updateInvoiceWithId, initialState);
+
   return (
-    <form>
+    <form action={formAction}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* Customer Name */}
         <div className="mb-4">
